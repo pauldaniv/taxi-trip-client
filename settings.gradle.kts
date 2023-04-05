@@ -1,1 +1,1 @@
-rootProject.name = "promotion"
+rootProject.name = "taxi-trip-client"
