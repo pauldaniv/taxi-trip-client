@@ -1,23 +1,22 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: Build and Deploy service
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main ]
 
 env:
   DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
-  GITLAB_DOCKER_REGISTRY_URL: ${{ secrets.GITLAB_DOCKER_REGISTRY_URL }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  TOKEN: ${{ secrets.TOKEN }}
 jobs:
   publish:
     runs-on: ubuntu-latest
-
+    container:
+      image: ghcr.io/pauldaniv/yellow-taxi-scripts/build-java:latest
     steps:
       - uses: actions/checkout@v3
       - name: Cache gradle dependencies
@@ -37,9 +36,13 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Run tests
-        run: ./gradlew test
-      - name: Build docker image
-        run: ./gradlew bootBuildImage
+      - name: Run Build
+        run: ci build
+      - name: Run Tests
+        run: ci test
+      - name: Publish artifacts
+        if: github.ref == 'refs/heads/main'
+        run: ci publish
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        run: ci deploy
