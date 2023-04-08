@@ -15,6 +15,7 @@ val codeArtifactPassword: String? = System.getenv("CODEARTIFACT_AUTH_TOKEN")
 
 repositories {
   mavenCentral()
+  mavenLocal()
   maven {
     name = "CodeArtifact"
     url = uri(codeArtifactRepository)
@@ -31,11 +32,6 @@ dependencies {
   testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-val sourcesJar by tasks.creating(Jar::class) {
-  archiveClassifier.set("sources")
-  from(sourceSets["main"].allSource)
-}
-
 publishing {
   repositories {
     maven {
@@ -49,11 +45,22 @@ publishing {
   }
 
   publications {
-    register<MavenPublication>("publishDependencies") {
-      from(components["java"])
-      artifact(sourcesJar)
+    create<MavenPublication>("maven") {
+      versionMapping {
+        usage("java-api") {
+          fromResolutionOf("runtimeClasspath")
+        }
+        usage("java-runtime") {
+          fromResolutionResult()
+        }
+      }
     }
   }
+}
+
+tasks.withType<JavaCompile> {
+  sourceCompatibility = "17"
+  targetCompatibility = "17"
 }
 
 tasks.withType<Test> {
