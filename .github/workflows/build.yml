@@ -18,7 +18,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/pauldaniv/yellow-taxi-scripts/build-java:latest
+      image: ghcr.io/pauldaniv/yellow-taxi-scripts/build-java:1.0
     steps:
       - name: Checkout
         uses: actions/checkout@v3
