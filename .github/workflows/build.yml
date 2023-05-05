@@ -54,5 +54,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: ci publish
       - name: Deploy
+        env:
+          MANIFESTS_SHARED_TOKEN: ${{ secrets.MANIFESTS_SHARED_TOKEN }}
         if: github.ref == 'refs/heads/main'
         run: ci deploy
