@@ -1,1 +1,7 @@
 server.port: ${PORT:8080}
+
+services:
+  facade-api:
+    url: ${FACADE_API_HOST:http://localhost:8081}
+
+event.file.basePath: ${EVENT_FILE_BASE_PATH:/app}
