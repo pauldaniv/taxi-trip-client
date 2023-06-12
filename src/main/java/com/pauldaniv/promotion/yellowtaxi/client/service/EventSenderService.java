@@ -73,7 +73,7 @@ public class EventSenderService implements CmdService {
             for (CSVRecord record : records) {
                 recordCount++;
                 final TripRequest event = makeEvent(record);
-                if (recordCount >= count) {
+                if (recordCount > count) {
                     break;
                 }
                 CompletableFuture.supplyAsync(() -> {
