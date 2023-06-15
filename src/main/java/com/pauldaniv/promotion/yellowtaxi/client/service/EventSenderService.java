@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,9 +46,9 @@ public class EventSenderService implements CmdService {
                 .toList();
         final List<String> availableCommands = COMMANDS.stream().map(it -> String.format("%s <number>", it)).toList();
         validate(params, commandsPassed, availableCommands);
-        final Map<String, Long> commands = listToMap(params);
-        final Long eventCount = commands.getOrDefault(COUNT, 1000L);
-        final Long concurrency = commands.getOrDefault(CONCURRENCY, 5L);
+        final Map<String, String> commands = listToMap(params);
+        final Long eventCount = Optional.ofNullable(commands.get(COUNT)).map(Long::valueOf).orElse(1000L);
+        final Long concurrency = Optional.ofNullable(commands.get(CONCURRENCY)).map(Long::valueOf).orElse(5L);
         log.info("Using event count: {}, and concurrency: {}", eventCount, concurrency);
         sendEvents(eventCount, concurrency);
     }

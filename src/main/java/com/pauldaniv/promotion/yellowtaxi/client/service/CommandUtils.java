@@ -8,10 +8,10 @@ import java.util.Map;
 
 @Slf4j
 public class CommandUtils {
-    public static Map<String, Long> listToMap(final List<String> commands) {
-        Map<String, Long> commandMap = new HashMap<>();
+    public static Map<String, String> listToMap(final List<String> commands) {
+        Map<String, String> commandMap = new HashMap<>();
         for (int i = 0; i < commands.size() ; i++) {
-            commandMap.put(commands.get(i), Long.valueOf(commands.get(++i)));
+            commandMap.put(commands.get(i), commands.get(++i));
         }
         return commandMap;
     }
