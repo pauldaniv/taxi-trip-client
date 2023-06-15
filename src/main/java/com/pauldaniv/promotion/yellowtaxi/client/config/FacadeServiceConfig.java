@@ -2,6 +2,7 @@ package com.pauldaniv.promotion.yellowtaxi.client.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pauldaniv.promotion.yellowtaxi.facade.TaxiTripFacadeAPI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,14 +18,14 @@ public class FacadeServiceConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 
     @Bean
     public TaxiTripFacadeAPI createFacadeAPI(ObjectMapper objectMapper) {
-        objectMapper.registerModule(new JSR310Module());
-
-        Retrofit retrofit = new Retrofit.Builder()
+        final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(facadeApiUrl)
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .build();

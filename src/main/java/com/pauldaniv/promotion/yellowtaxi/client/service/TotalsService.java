@@ -20,6 +20,7 @@ import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.val
 @Service("totals")
 @RequiredArgsConstructor
 public class TotalsService implements CmdService {
+
     public static final String DAY = "--day";
     public static final String MONTH = "--month";
     public static final String YEAR = "--year";

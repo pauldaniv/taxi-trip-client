@@ -35,6 +35,7 @@ dependencies {
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
 
   implementation("org.apache.commons:commons-csv:1.10.0")
+  implementation("com.amazonaws:aws-java-sdk-s3:1.12.488")
 
   implementation("org.springframework.boot:spring-boot-starter")
 //  implementation("org.springframework.boot:spring-boot-starter-web")
