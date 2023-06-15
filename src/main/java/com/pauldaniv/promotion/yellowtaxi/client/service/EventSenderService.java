@@ -33,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.listToMap;
 import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.validate;
@@ -84,13 +85,14 @@ public class EventSenderService implements CmdService {
                 COMMANDS.get(CONCURRENCY).getDefaultValue()));
         log.info("Using event count: {}, and concurrency: {}", eventCount, concurrency);
         final Instant start = Instant.now();
-        sendEvents(eventCount, concurrency);
-        showTimeElapsed(eventCount, start);
+        final Long eventsSend = sendEvents(eventCount, concurrency);
+        showTimeElapsed(eventsSend, start);
     }
 
-    private void sendEvents(final Long count, final Long concurrency) {
+    private Long sendEvents(final Long count, final Long concurrency) {
 
-        Iterable<CSVRecord> records;
+        final AtomicLong eventsSent = new AtomicLong(0);
+        final AtomicLong eventsFailedToSent = new AtomicLong(0);
 
         try (final InputStream in = getFileContent();
              final BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
@@ -104,12 +106,12 @@ public class EventSenderService implements CmdService {
                     .setSkipHeaderRecord(true)
                     .build();
 
-            records = csvFormat.parse(reader);
+            final Iterable<CSVRecord> records = csvFormat.parse(reader);
             final ExecutorService executor = Executors.newFixedThreadPool(Math.toIntExact(concurrency));
 
             long recordCount = 0L;
-            for (
-                    CSVRecord record : records) {
+
+            for (CSVRecord record : records) {
                 recordCount++;
                 final TripRequest event = makeEvent(record);
                 if (recordCount > count) {
@@ -123,8 +125,10 @@ public class EventSenderService implements CmdService {
                     return facadeService.sendEvent(event);
                 }, executor).thenAcceptAsync(it -> {
                     log.info("Processed successfully, status: {}", it);
+                    eventsSent.incrementAndGet();
                 }).exceptionallyAsync(it -> {
                     log.error("Failed to send event. Reason: {}", it.getMessage());
+                    eventsFailedToSent.incrementAndGet();
                     return null;
                 });
             }
@@ -140,6 +144,7 @@ public class EventSenderService implements CmdService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        return eventsSent.get();
     }
 
     private static TripRequest makeEvent(CSVRecord record) {
