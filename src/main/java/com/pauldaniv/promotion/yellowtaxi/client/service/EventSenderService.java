@@ -25,10 +25,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -76,7 +74,8 @@ public class EventSenderService implements CmdService {
         final List<String> commandsPassed = params.stream()
                 .filter(COMMANDS.keySet()::contains)
                 .toList();
-        final List<String> availableCommands = COMMANDS.keySet().stream().map(it -> String.format("%s <number>", it)).toList();
+        final List<String> availableCommands = COMMANDS.keySet().stream()
+                .map(it -> String.format("%s <number>", it)).toList();
         validate(params, commandsPassed, availableCommands);
         final Map<String, String> commands = listToMap(params);
         final Long eventCount = Long.valueOf(commands.getOrDefault(COUNT,
@@ -96,12 +95,12 @@ public class EventSenderService implements CmdService {
 
         try (final InputStream in = getFileContent();
              final BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            final String[] header = List.of("VendorID", "tpep_pickup_datetime", "tpep_dropoff_datetime", "passenger_count",
-                    "trip_distance", "RatecodeID", "store_and_fwd_flag", "PULocationID", "DOLocationID",
-                    "payment_type", "fare_amount", "extra", "mta_tax", "tip_amount", "tolls_amount",
-                    "improvement_surcharge", "total_amount").toArray(new String[]{});
+            final String[] header = new String[]{"VendorID", "tpep_pickup_datetime", "tpep_dropoff_datetime",
+                    "passenger_count", "trip_distance", "RatecodeID", "store_and_fwd_flag", "PULocationID",
+                    "DOLocationID", "payment_type", "fare_amount", "extra", "mta_tax", "tip_amount",
+                    "tolls_amount", "improvement_surcharge", "total_amount"};
 
-            CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
+            final CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
                     .setHeader(header)
                     .setSkipHeaderRecord(true)
                     .build();
@@ -148,8 +147,10 @@ public class EventSenderService implements CmdService {
     }
 
     private static TripRequest makeEvent(CSVRecord record) {
-        final LocalDateTime tpepPickupDatetime = LocalDateTime.parse(record.get("tpep_pickup_datetime"), DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a"));
-        final LocalDateTime tpepDropoffDatetime = LocalDateTime.parse(record.get("tpep_dropoff_datetime"), DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a"));
+        final LocalDateTime tpepPickupDatetime = LocalDateTime.parse(record.get("tpep_pickup_datetime"),
+                DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a"));
+        final LocalDateTime tpepDropoffDatetime = LocalDateTime.parse(record.get("tpep_dropoff_datetime"),
+                DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a"));
         return TripRequest.builder()
                 .vendorId(Long.valueOf(record.get("VendorID")))
                 .tPepPickupDatetime(tpepPickupDatetime)
