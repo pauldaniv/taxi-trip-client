@@ -3,7 +3,7 @@ package com.pauldaniv.promotion.yellowtaxi.client.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
-import com.pauldaniv.promotion.yellowtaxi.model.TotalsResponse;
+import com.pauldaniv.promotion.yellowtaxi.facade.model.TotalsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,7 @@ package com.pauldaniv.promotion.yellowtaxi.client.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
-import com.pauldaniv.promotion.yellowtaxi.model.TripRequest;
+import com.pauldaniv.promotion.yellowtaxi.facade.model.TripRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;

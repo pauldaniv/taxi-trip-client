@@ -1,9 +1,8 @@
 package com.pauldaniv.promotion.yellowtaxi.client.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.pauldaniv.promotion.yellowtaxi.facade.TaxiTripFacadeAPI;
+import com.pauldaniv.promotion.yellowtaxi.facade.api.TaxiTripFacadeAPI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,8 @@
 package com.pauldaniv.promotion.yellowtaxi.client.service;
 
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
+import com.pauldaniv.promotion.yellowtaxi.facade.model.AuthRequest;
+import com.pauldaniv.promotion.yellowtaxi.facade.model.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class LoginService implements CmdService {
                     .build()
     );
 
+    private final FacadeService facadeService;
+
     @Override
     public void runCommand(List<String> params) {
 
@@ -54,6 +58,11 @@ public class LoginService implements CmdService {
 
     private void doLogin(final String username,
                          final String password) {
-        log.info("Querying totals with username={}, password={}", username, password);
+        log.info("Logging in username={}, password=****", username);
+        final AuthResponse auth = facadeService.login(AuthRequest.builder()
+                .email(username)
+                .password(password)
+                .build());
+        log.info("Auth={}", auth);
     }
 }
