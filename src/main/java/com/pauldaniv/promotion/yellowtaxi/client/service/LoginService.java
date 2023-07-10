@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -43,11 +45,11 @@ public class LoginService implements CmdService {
         validate(params, commandsPassed, availableCommands);
         final Map<String, String> commands = listToMap(params);
         final String username = commands.getOrDefault(USERNAME, COMMANDS.get(USERNAME).getDefaultValue());
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
+        System.out.printf("User: %s%n", username);
+        System.out.print("Pass: ");
 
-        // Reading data using readLine
-        String password = null;
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final String password;
         try {
             password = reader.readLine();
         } catch (IOException e) {
@@ -63,6 +65,11 @@ public class LoginService implements CmdService {
                 .email(username)
                 .password(password)
                 .build());
-        log.info("Auth={}", auth);
+        try {
+            Files.writeString(Paths.get("token.txt"), auth.getAccessToken());
+        } catch (IOException e) {
+            log.error("unable to store access token", e);
+            throw new RuntimeException(e);
+        }
     }
 }

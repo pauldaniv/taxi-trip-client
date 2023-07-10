@@ -67,6 +67,7 @@ public class EventSenderService implements CmdService {
     private Boolean eventFileLocal;
 
     private final FacadeService facadeService;
+    private final SessionCheckService sessionCheckService;
     private final AmazonS3 amazonS3;
 
     @Override
@@ -84,6 +85,7 @@ public class EventSenderService implements CmdService {
                 COMMANDS.get(CONCURRENCY).getDefaultValue()));
         log.info("Using event count: {}, and concurrency: {}", eventCount, concurrency);
         final Instant start = Instant.now();
+        sessionCheckService.isSessionActive();
         final Long eventsSend = sendEvents(eventCount, concurrency);
         showTimeElapsed(eventsSend, start);
     }

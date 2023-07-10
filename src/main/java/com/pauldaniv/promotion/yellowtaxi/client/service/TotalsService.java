@@ -25,10 +25,11 @@ public class TotalsService implements CmdService {
     public static final String MONTH = "--month";
     public static final String YEAR = "--year";
 
-    private static final Map<String, CommandSpec> COMMANDS = Map.of(
+    private static final Map<String, CommandSpec> OPTIONS = Map.of(
             DAY, CommandSpec.builder()
                     .typeSpec("number")
                     .description("Day of the totals range")
+                    .defaultValue("2018")
                     .build(),
             MONTH, CommandSpec.builder()
                     .typeSpec("number or month name ")
@@ -42,29 +43,32 @@ public class TotalsService implements CmdService {
     );
 
     private final FacadeService facadeService;
+    private final SessionCheckService sessionCheckService;
     private final ObjectMapper objectMapper;
 
     @Override
     public void runCommand(List<String> params) {
 
         final List<String> commandsPassed = params.stream()
-                .filter(COMMANDS.keySet()::contains)
+                .filter(OPTIONS.keySet()::contains)
                 .toList();
 
-        final List<String> availableCommands = COMMANDS.keySet().stream().map(it -> String.format("%s <value>", it)).toList();
+        final List<String> availableCommands = OPTIONS.keySet().stream().map(it -> String.format("%s <value>", it)).toList();
         validate(params, commandsPassed, availableCommands);
         final Map<String, String> commands = listToMap(params);
-        final Integer year = Integer.valueOf(commands.getOrDefault(YEAR, COMMANDS.get(YEAR).getDefaultValue()));
-        final Optional<Integer> month = Optional.ofNullable(commands.get(MONTH)).map(Integer::valueOf);
+        final Integer year = Integer.valueOf(commands.getOrDefault(YEAR, OPTIONS.get(YEAR).getDefaultValue()));
+        final Integer month = Optional.ofNullable(commands.get(MONTH)).map(Integer::valueOf)
+                .orElseThrow(() -> new RuntimeException("Month is required!"));
         final Optional<Integer> day = Optional.ofNullable(commands.get(DAY)).map(Integer::valueOf);
+        sessionCheckService.isSessionActive();
         displayTotals(year, month, day);
     }
 
     private void displayTotals(final Integer year,
-                               final Optional<Integer> month,
+                               final Integer month,
                                final Optional<Integer> day) {
         log.info("Querying totals with year={}, month={}, day={}", year, month, day);
-        final TotalsResponse totals = facadeService.getTotals(year, month.orElse(null), day.orElse(null));
+        final TotalsResponse totals = facadeService.getTotals(year, month, day.orElse(null));
         try {
             final String totalsStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(totals);
 
