@@ -83,7 +83,8 @@ public class EventSenderService implements CmdService {
                 COMMANDS.get(COUNT).getDefaultValue()));
         final Long concurrency = Long.valueOf(commands.getOrDefault(CONCURRENCY,
                 COMMANDS.get(CONCURRENCY).getDefaultValue()));
-        log.info("Using event count: {}, and concurrency: {}", eventCount, concurrency);
+        log.info("Using event count: {}, and concurrency: {}", eventCount, eventCount < concurrency
+                ? eventCount : concurrency);
         final Instant start = Instant.now();
         sessionCheckService.isSessionActive();
         final Long eventsSend = sendEvents(eventCount, concurrency);
