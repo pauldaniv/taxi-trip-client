@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
 import com.pauldaniv.promotion.yellowtaxi.client.model.PerformanceStats;
-import com.pauldaniv.promotion.yellowtaxi.facade.model.TripRequest;
+import com.pauldaniv.promotion.yellowtaxi.model.TaxiTrip;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -115,7 +115,7 @@ public class EventSenderService implements CmdService {
 
             for (CSVRecord record : records) {
                 recordCount++;
-                final TripRequest event = makeEvent(record);
+                final TaxiTrip event = makeEvent(record);
                 if (recordCount > count) {
                     if (in instanceof S3ObjectInputStream s3In) {
                         s3In.abort();
@@ -150,12 +150,12 @@ public class EventSenderService implements CmdService {
         return makePerformanceReport(eventsSent.get(), eventsFailedToSent.get(), start);
     }
 
-    private static TripRequest makeEvent(CSVRecord record) {
+    private static TaxiTrip makeEvent(CSVRecord record) {
         final LocalDateTime tpepPickupDatetime = LocalDateTime.parse(record.get("tpep_pickup_datetime"),
                 DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a"));
         final LocalDateTime tpepDropoffDatetime = LocalDateTime.parse(record.get("tpep_dropoff_datetime"),
                 DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a"));
-        return TripRequest.builder()
+        return TaxiTrip.builder()
                 .vendorId(Long.valueOf(record.get("VendorID")))
                 .tPepPickupDatetime(tpepPickupDatetime)
                 .tPepDropOffDatetime(tpepDropoffDatetime)

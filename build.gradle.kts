@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.pauldaniv.promotion.yellowtaxi.facade:api:0.0.1-SNAPSHOT")
+    implementation("com.pauldaniv.promotion.yellowtaxi.facade:api:0.0.2-SNAPSHOT")
     implementation("com.pauldaniv.promotion.yellowtaxi:api:0.0.6-SNAPSHOT")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")

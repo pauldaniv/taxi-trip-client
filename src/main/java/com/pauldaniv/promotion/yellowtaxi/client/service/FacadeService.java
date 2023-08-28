@@ -5,8 +5,8 @@ import com.pauldaniv.promotion.yellowtaxi.facade.model.AuthRequest;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.AuthResponse;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.ResponseData;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.TotalsResponse;
-import com.pauldaniv.promotion.yellowtaxi.facade.model.TripRequest;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.UnauthorizedException;
+import com.pauldaniv.promotion.yellowtaxi.model.TaxiTrip;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class FacadeService {
 
     private final TaxiTripFacadeAPI taxiTripFacadeAPI;
 
-    public ResponseData sendEvent(TripRequest event) {
+    public ResponseData sendEvent(TaxiTrip event) {
         try {
             final Response<ResponseData> response = taxiTripFacadeAPI.pushTaxiTrip(event).execute();
             if (response.code() == 401) {
