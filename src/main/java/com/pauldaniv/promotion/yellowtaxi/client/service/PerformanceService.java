@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
-@Service("performance")
+@Service("performance_check")
 @RequiredArgsConstructor
 public class PerformanceService implements CmdService {
 

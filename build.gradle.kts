@@ -39,7 +39,6 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-s3:1.12.488")
 
     implementation("org.springframework.boot:spring-boot-starter")
-//  implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testng:testng:7.8.0")
 }
