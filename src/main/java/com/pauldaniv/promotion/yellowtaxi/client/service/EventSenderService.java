@@ -3,6 +3,7 @@ package com.pauldaniv.promotion.yellowtaxi.client.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
+import com.pauldaniv.promotion.yellowtaxi.client.model.PerformanceStats;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.TripRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -85,14 +86,13 @@ public class EventSenderService implements CmdService {
                 COMMANDS.get(CONCURRENCY).getDefaultValue()));
         log.info("Using event count: {}, and concurrency: {}", eventCount, eventCount < concurrency
                 ? eventCount : concurrency);
-        final Instant start = Instant.now();
+
         sessionCheckService.isSessionActive();
-        final Long eventsSend = sendEvents(eventCount, concurrency);
-        showTimeElapsed(eventsSend, start);
+        sendEvents(eventCount, concurrency);
     }
 
-    private Long sendEvents(final Long count, final Long concurrency) {
-
+    public PerformanceStats sendEvents(final Long count, final Long concurrency) {
+        final Instant start = Instant.now();
         final AtomicLong eventsSent = new AtomicLong(0);
         final AtomicLong eventsFailedToSent = new AtomicLong(0);
 
@@ -146,7 +146,8 @@ public class EventSenderService implements CmdService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return eventsSent.get();
+
+        return makePerformanceReport(eventsSent.get(), eventsFailedToSent.get(), start);
     }
 
     private static TripRequest makeEvent(CSVRecord record) {
@@ -183,7 +184,10 @@ public class EventSenderService implements CmdService {
         }
     }
 
-    private static void showTimeElapsed(Long eventCount, Instant start) {
+    private PerformanceStats makePerformanceReport(
+            Long eventCount,
+            Long failedRequests,
+            Instant start) {
         final Instant end = Instant.now();
         final Duration took = Duration.between(start, end);
         log.info("Run completed: Millis took: {}", took.toMillis());
@@ -191,7 +195,14 @@ public class EventSenderService implements CmdService {
                 .divide(new BigDecimal(1000), 2, RoundingMode.HALF_UP)
                 .setScale(2, RoundingMode.HALF_UP);
         log.info("Run completed: Seconds took: {}", secondsTook);
+        final BigDecimal averageRequestsPerSecond = new BigDecimal(eventCount).divide(secondsTook, 2, RoundingMode.HALF_UP);
         log.info("Total events send: {}, Average requests per second: {}",
-                eventCount, new BigDecimal(eventCount).divide(secondsTook, 2, RoundingMode.HALF_UP));
+                eventCount, averageRequestsPerSecond);
+        return PerformanceStats.builder()
+                .successfulRequests(eventCount)
+                .failedRequests(failedRequests)
+                .secondsTook(secondsTook)
+                .avgRequestsPerSecond(averageRequestsPerSecond)
+                .build();
     }
 }
