@@ -60,7 +60,7 @@ public class EventSenderServiceTest extends AbstractTestNGSpringContextTests {
     public void sendsEventsExceptionally() {
         when(facadeService.sendEvent(any()))
                 .thenThrow(new RuntimeException("test"));
-
+        //todo: fix flaky tests
         final PerformanceStats performanceStats = eventSenderService
                 .sendEvents(8L, 10L);
         assertThat(performanceStats).usingRecursiveComparison()
