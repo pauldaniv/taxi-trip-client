@@ -33,6 +33,7 @@ public class LoginService implements CmdService {
     );
 
     private final FacadeService facadeService;
+    private final CommandLineReader commandLineReader;
 
     @Override
     public void runCommand(List<String> params) {
@@ -48,13 +49,7 @@ public class LoginService implements CmdService {
         System.out.printf("User: %s%n", username);
         System.out.print("Pass: ");
 
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        final String password;
-        try {
-            password = reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        final String password = commandLineReader.read();
         doLogin(username, password);
     }
 
@@ -65,11 +60,12 @@ public class LoginService implements CmdService {
                 .email(username)
                 .password(password)
                 .build());
+        final String accessToken = auth.getAccessToken();
         try {
-            Files.writeString(Paths.get("token.txt"), auth.getAccessToken());
-        } catch (IOException e) {
+            Files.writeString(Paths.get("token.txt"), accessToken);
+        } catch (Exception e) {
             log.error("unable to store access token", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Unable to store access token", e);
         }
     }
 }

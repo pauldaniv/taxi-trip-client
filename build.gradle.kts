@@ -1,6 +1,7 @@
 plugins {
     java
     `maven-publish`
+    jacoco
     id("org.springframework.boot") version "3.1.0"
     id("io.spring.dependency-management") version "1.1.0"
     id("io.freefair.lombok") version "8.0.1"
@@ -64,6 +65,50 @@ publishing {
                 usage("java-runtime") {
                     fromResolutionResult()
                 }
+            }
+        }
+    }
+}
+
+
+tasks.withType<Test> {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
+}
+
+tasks.withType<JacocoReport> {
+    afterEvaluate {
+        classDirectories.setFrom(classDirectories.files.map {
+            fileTree(it).matching {
+                exclude(
+                    "**/config",
+                    "**/model",
+                    "**/*Application*"
+                )
+            }
+        })
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            classDirectories.setFrom(tasks.jacocoTestReport.get().classDirectories)
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = "0.69999".toBigDecimal()
             }
         }
     }

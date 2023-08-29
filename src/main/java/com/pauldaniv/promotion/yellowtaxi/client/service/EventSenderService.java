@@ -2,6 +2,7 @@ package com.pauldaniv.promotion.yellowtaxi.client.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.pauldaniv.promotion.yellowtaxi.client.config.AppConfig;
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
 import com.pauldaniv.promotion.yellowtaxi.client.model.PerformanceStats;
 import com.pauldaniv.promotion.yellowtaxi.model.TaxiTrip;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.stereotype.Service;
 
@@ -58,15 +58,8 @@ public class EventSenderService implements CmdService {
                     .build()
     );
 
-    @Value("${event.file.key}")
-    private String fileKey;
-    @Value("${event.file.localBasePath}")
-    private String localBasePath;
-    @Value("${event.file.s3BasePath}")
-    private String s3BasePath;
-    @Value("${event.file.isLocal}")
-    private Boolean eventFileLocal;
 
+    private final AppConfig appConfig;
     private final FacadeService facadeService;
     private final SessionCheckService sessionCheckService;
     private final AmazonS3 amazonS3;
@@ -115,7 +108,7 @@ public class EventSenderService implements CmdService {
 
             for (CSVRecord record : records) {
                 recordCount++;
-                final TaxiTrip event = makeEvent(record);
+                final TaxiTrip event = toTaxiTripEvent(record);
                 if (recordCount > count) {
                     if (in instanceof S3ObjectInputStream s3In) {
                         s3In.abort();
@@ -150,7 +143,7 @@ public class EventSenderService implements CmdService {
         return makePerformanceReport(eventsSent.get(), eventsFailedToSent.get(), start);
     }
 
-    private static TaxiTrip makeEvent(CSVRecord record) {
+    private static TaxiTrip toTaxiTripEvent(CSVRecord record) {
         final LocalDateTime tpepPickupDatetime = LocalDateTime.parse(record.get("tpep_pickup_datetime"),
                 DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a"));
         final LocalDateTime tpepDropoffDatetime = LocalDateTime.parse(record.get("tpep_dropoff_datetime"),
@@ -177,10 +170,11 @@ public class EventSenderService implements CmdService {
     }
 
     private InputStream getFileContent() throws IOException {
-        if (this.eventFileLocal) {
-            return Files.newInputStream(Paths.get(String.format("%s/%s", localBasePath, fileKey)));
+        if (appConfig.getEventFileLocal()) {
+            return Files.newInputStream(Paths.get(String.format("%s/%s",
+                    appConfig.getLocalBasePath(), appConfig.getFileKey())));
         } else {
-            return amazonS3.getObject(s3BasePath, fileKey).getObjectContent();
+            return amazonS3.getObject(appConfig.getS3BasePath(), appConfig.getFileKey()).getObjectContent();
         }
     }
 
