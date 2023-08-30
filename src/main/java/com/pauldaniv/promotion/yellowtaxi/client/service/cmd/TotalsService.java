@@ -1,8 +1,10 @@
-package com.pauldaniv.promotion.yellowtaxi.client.service;
+package com.pauldaniv.promotion.yellowtaxi.client.service.cmd;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
+import com.pauldaniv.promotion.yellowtaxi.client.service.FacadeService;
+import com.pauldaniv.promotion.yellowtaxi.client.service.SessionCheckService;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.TotalsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.listToMap;
-import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.validate;
+import static com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CommandUtils.listToMap;
+import static com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CommandUtils.validate;
 
 @Slf4j
 @Service("totals")
@@ -73,7 +75,7 @@ public class TotalsService implements CmdService {
             final String totalsStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(totals);
 
             log.info("Totals response: {}", totalsStr);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             log.error("Failed to parse json. Message={}", e.getMessage(), e);
         }
     }

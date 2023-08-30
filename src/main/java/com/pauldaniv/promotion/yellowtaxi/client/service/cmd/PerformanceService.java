@@ -1,4 +1,4 @@
-package com.pauldaniv.promotion.yellowtaxi.client.service;
+package com.pauldaniv.promotion.yellowtaxi.client.service.cmd;
 
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
 import com.pauldaniv.promotion.yellowtaxi.client.model.PerformanceStats;
@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.listToMap;
-import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.validate;
+import static com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CommandUtils.listToMap;
+import static com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CommandUtils.validate;
 
 @Slf4j
 @Service("performance_check")

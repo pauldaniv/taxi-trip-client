@@ -1,22 +1,20 @@
-package com.pauldaniv.promotion.yellowtaxi.client.service;
+package com.pauldaniv.promotion.yellowtaxi.client.service.cmd;
 
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
+import com.pauldaniv.promotion.yellowtaxi.client.service.FacadeService;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.AuthRequest;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.listToMap;
-import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.validate;
+import static com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CommandUtils.listToMap;
+import static com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CommandUtils.validate;
 
 @Slf4j
 @Service("login")

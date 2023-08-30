@@ -1,4 +1,4 @@
-package com.pauldaniv.promotion.yellowtaxi.client.service;
+package com.pauldaniv.promotion.yellowtaxi.client.service.cmd;
 
 import org.springframework.stereotype.Component;
 

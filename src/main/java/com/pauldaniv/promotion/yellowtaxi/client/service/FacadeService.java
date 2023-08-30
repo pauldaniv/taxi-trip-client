@@ -26,12 +26,12 @@ public class FacadeService {
         try {
             final Response<ResponseData> response = taxiTripFacadeAPI.pushTaxiTrip(event).execute();
             if (response.code() == 401) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException("unauthorized");
             }
             return response.body();
         } catch (IOException e) {
             log.error("Failed to execute request. Error: {}", e.getMessage(), e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to execute request", e);
         }
     }
 
@@ -40,7 +40,7 @@ public class FacadeService {
             return taxiTripFacadeAPI.getTotals(year, month, day).execute().body();
         } catch (IOException e) {
             log.error("Failed to execute request. Error: {}", e.getMessage(), e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to execute request", e);
         }
     }
 
@@ -49,7 +49,7 @@ public class FacadeService {
             return taxiTripFacadeAPI.login(authRequest).execute().body();
         } catch (IOException e) {
             log.error("Failed to execute request. Error: {}", e.getMessage(), e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to execute request", e);
         }
     }
 

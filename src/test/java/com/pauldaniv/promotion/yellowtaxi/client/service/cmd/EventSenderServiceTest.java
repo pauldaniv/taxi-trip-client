@@ -1,7 +1,10 @@
-package com.pauldaniv.promotion.yellowtaxi.client.service;
+package com.pauldaniv.promotion.yellowtaxi.client.service.cmd;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.pauldaniv.promotion.yellowtaxi.client.model.PerformanceStats;
+import com.pauldaniv.promotion.yellowtaxi.client.service.FacadeService;
+import com.pauldaniv.promotion.yellowtaxi.client.service.SessionCheckService;
+import com.pauldaniv.promotion.yellowtaxi.client.service.cmd.EventSenderService;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,17 +63,17 @@ public class EventSenderServiceTest extends AbstractTestNGSpringContextTests {
     public void sendsEventsExceptionally() {
         when(facadeService.sendEvent(any()))
                 .thenThrow(new RuntimeException("test"));
-        //todo: fix flaky tests
+
         final PerformanceStats performanceStats = eventSenderService
-                .sendEvents(8L, 10L);
+                .sendEvents(80L, 1L);
         assertThat(performanceStats).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(PerformanceStats.builder()
-                        .failedRequests(8L)
+                        .failedRequests(80L)
                         .successfulRequests(0L)
                         .build());
 
-        verify(facadeService, times(8)).sendEvent(any());
+        verify(facadeService, times(80)).sendEvent(any());
     }
 
     @AfterTest

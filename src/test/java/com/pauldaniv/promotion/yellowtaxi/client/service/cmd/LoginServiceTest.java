@@ -1,5 +1,8 @@
-package com.pauldaniv.promotion.yellowtaxi.client.service;
+package com.pauldaniv.promotion.yellowtaxi.client.service.cmd;
 
+import com.pauldaniv.promotion.yellowtaxi.client.service.FacadeService;
+import com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CommandLineReader;
+import com.pauldaniv.promotion.yellowtaxi.client.service.cmd.LoginService;
 import com.pauldaniv.promotion.yellowtaxi.facade.model.AuthResponse;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

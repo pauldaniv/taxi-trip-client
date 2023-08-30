@@ -1,4 +1,4 @@
-package com.pauldaniv.promotion.yellowtaxi.client.service;
+package com.pauldaniv.promotion.yellowtaxi.client.service.cmd;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

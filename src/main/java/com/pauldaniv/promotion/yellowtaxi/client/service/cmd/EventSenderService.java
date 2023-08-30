@@ -1,10 +1,12 @@
-package com.pauldaniv.promotion.yellowtaxi.client.service;
+package com.pauldaniv.promotion.yellowtaxi.client.service.cmd;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.pauldaniv.promotion.yellowtaxi.client.config.AppConfig;
 import com.pauldaniv.promotion.yellowtaxi.client.model.CommandSpec;
 import com.pauldaniv.promotion.yellowtaxi.client.model.PerformanceStats;
+import com.pauldaniv.promotion.yellowtaxi.client.service.FacadeService;
+import com.pauldaniv.promotion.yellowtaxi.client.service.SessionCheckService;
 import com.pauldaniv.promotion.yellowtaxi.model.TaxiTrip;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +36,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.listToMap;
-import static com.pauldaniv.promotion.yellowtaxi.client.service.CommandUtils.validate;
+import static com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CommandUtils.listToMap;
+import static com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CommandUtils.validate;
 
 @Slf4j
 @Service("event")

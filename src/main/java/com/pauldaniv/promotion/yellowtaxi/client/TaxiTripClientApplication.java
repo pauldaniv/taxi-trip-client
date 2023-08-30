@@ -1,6 +1,6 @@
 package com.pauldaniv.promotion.yellowtaxi.client;
 
-import com.pauldaniv.promotion.yellowtaxi.client.service.CmdResolver;
+import com.pauldaniv.promotion.yellowtaxi.client.service.cmd.CmdResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
