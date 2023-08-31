@@ -52,7 +52,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-      - name: Run Build
+      - name: Run Test and  Build
         run: ci build
       - name: Run Test Coverage Check
         run: ci test_coverage_check
