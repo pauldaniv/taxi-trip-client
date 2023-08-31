@@ -118,15 +118,15 @@ public class EventSenderServiceTest extends AbstractTestNGSpringContextTests {
         when(appConfig.getFileKey()).thenReturn("test_events.csv");
 
         final PerformanceStats performanceStats = eventSenderService
-                .sendEvents(80L, 1L);
+                .sendEvents(250L, 1L);
         assertThat(performanceStats).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(PerformanceStats.builder()
-                        .failedRequests(80L)
+                        .failedRequests(250L)
                         .successfulRequests(0L)
                         .build());
 
-        verify(facadeService, times(80)).sendEvent(any());
+        verify(facadeService, times(250)).sendEvent(any());
     }
 
     public String getCsvFile() throws URISyntaxException, IOException {

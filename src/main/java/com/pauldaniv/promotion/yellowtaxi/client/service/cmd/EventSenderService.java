@@ -117,10 +117,10 @@ public class EventSenderService implements CmdService {
                 CompletableFuture.supplyAsync(() -> {
                     log.info("Sending event: {}", event);
                     return facadeService.sendEvent(event);
-                }, executor).thenAcceptAsync(it -> {
+                }, executor).thenAccept(it -> {
                     log.info("Processed successfully, status: {}", it);
                     eventsSent.incrementAndGet();
-                }).exceptionallyAsync(it -> {
+                }).exceptionally(it -> {
                     log.error("Failed to send event. Reason: {}", it.getMessage());
                     eventsFailedToSent.incrementAndGet();
                     return null;

@@ -54,8 +54,6 @@ jobs:
           distribution: 'temurin'
       - name: Run Build
         run: ci build
-      - name: Run Tests
-        run: ci test
       - name: Run Test Coverage Check
         run: ci test_coverage_check
       - name: Publish artifacts
