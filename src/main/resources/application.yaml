@@ -1,1 +1,13 @@
 server.port: ${PORT:8080}
+
+services:
+  facade-api:
+    url: ${FACADE_API_HOST:http://localhost:8081}
+
+event.file:
+  localBasePath: ${LOCAL_EVENT_FILE_BASE_PATH:/app}
+  s3BasePath: ${S3_EVENT_FILE_BASE_PATH:s-promotion-yt}
+  file-key: ${EVENT_FILE_KEY:2018_Yellow_Taxi_Trip_Data_first_100K.csv}
+  eventFileLocal: ${EVENT_FILE_LOCAL:true}
+
+aws.region: ${AWS_REGION:us-east-2}
