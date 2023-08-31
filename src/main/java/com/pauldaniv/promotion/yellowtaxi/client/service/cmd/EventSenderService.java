@@ -178,22 +178,23 @@ public class EventSenderService implements CmdService {
     }
 
     private PerformanceStats makePerformanceReport(
-            Long eventCount,
-            Long failedRequests,
-            Instant start) {
+            final Long eventsSucceeded,
+            final Long eventsFailed,
+            final Instant start) {
         final Instant end = Instant.now();
         final Duration took = Duration.between(start, end);
+        log.info("Events succeeded: {}, events failed: {}", eventsSucceeded, eventsFailed);
         log.info("Run completed: Millis took: {}", took.toMillis());
         final BigDecimal secondsTook = new BigDecimal(took.toMillis())
                 .divide(new BigDecimal(1000), 2, RoundingMode.HALF_UP)
                 .setScale(2, RoundingMode.HALF_UP);
         log.info("Run completed: Seconds took: {}", secondsTook);
-        final BigDecimal averageRequestsPerSecond = new BigDecimal(eventCount).divide(secondsTook, 2, RoundingMode.HALF_UP);
+        final BigDecimal averageRequestsPerSecond = new BigDecimal(eventsSucceeded).divide(secondsTook, 2, RoundingMode.HALF_UP);
         log.info("Total events send: {}, Average requests per second: {}",
-                eventCount, averageRequestsPerSecond);
+                eventsSucceeded, averageRequestsPerSecond);
         return PerformanceStats.builder()
-                .successfulRequests(eventCount)
-                .failedRequests(failedRequests)
+                .successfulRequests(eventsSucceeded)
+                .failedRequests(eventsFailed)
                 .secondsTook(secondsTook)
                 .avgRequestsPerSecond(averageRequestsPerSecond)
                 .build();
