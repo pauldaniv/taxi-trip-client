@@ -35,13 +35,7 @@ public class LoginService implements CmdService {
 
     @Override
     public void runCommand(List<String> params) {
-
-        final List<String> commandsPassed = params.stream()
-                .filter(COMMANDS.keySet()::contains)
-                .toList();
-
-        final List<String> availableCommands = COMMANDS.keySet().stream().map(it -> String.format("%s <value>", it)).toList();
-        validate(params, commandsPassed, availableCommands);
+        validate(params, COMMANDS);
         final Map<String, String> commands = listToMap(params);
         final String username = commands.getOrDefault(USERNAME, COMMANDS.get(USERNAME).getDefaultValue());
         System.out.printf("User: %s%n", username);

@@ -68,22 +68,19 @@ public class EventSenderService implements CmdService {
 
     @Override
     public void runCommand(List<String> params) {
-        final List<String> commandsPassed = params.stream()
-                .filter(COMMANDS.keySet()::contains)
-                .toList();
-        final List<String> availableCommands = COMMANDS.keySet().stream()
-                .map(it -> String.format("%s <number>", it)).toList();
-        validate(params, commandsPassed, availableCommands);
+        validate(params, COMMANDS);
         final Map<String, String> commands = listToMap(params);
         final Long eventCount = Long.valueOf(commands.getOrDefault(COUNT,
                 COMMANDS.get(COUNT).getDefaultValue()));
-        final Long concurrency = Long.valueOf(commands.getOrDefault(CONCURRENCY,
+        final long desiredConcurrency = Long.parseLong(commands.getOrDefault(CONCURRENCY,
                 COMMANDS.get(CONCURRENCY).getDefaultValue()));
-        log.info("Using event count: {}, and concurrency: {}", eventCount, eventCount < concurrency
-                ? eventCount : concurrency);
+
+        final long actualConcurrency = eventCount <= desiredConcurrency
+                ? desiredConcurrency / 2 : desiredConcurrency;
+        log.info("Using event count: {}, and concurrency: {}", eventCount, actualConcurrency);
 
         sessionCheckService.isSessionActive();
-        sendEvents(eventCount, concurrency);
+        sendEvents(eventCount, actualConcurrency);
     }
 
     public PerformanceStats sendEvents(final Long count, final Long concurrency) {
@@ -172,7 +169,7 @@ public class EventSenderService implements CmdService {
     }
 
     private InputStream getFileContent() throws IOException {
-        if (appConfig.getEventFileLocal()) {
+        if (appConfig.isEventFileLocal()) {
             return Files.newInputStream(Paths.get(String.format("%s/%s",
                     appConfig.getLocalBasePath(), appConfig.getFileKey())));
         } else {

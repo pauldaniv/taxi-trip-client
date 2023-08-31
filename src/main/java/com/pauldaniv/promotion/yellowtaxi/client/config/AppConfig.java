@@ -11,5 +11,5 @@ public class AppConfig {
     private String fileKey;
     private String localBasePath;
     private String s3BasePath;
-    private Boolean eventFileLocal;
+    private boolean eventFileLocal;
 }

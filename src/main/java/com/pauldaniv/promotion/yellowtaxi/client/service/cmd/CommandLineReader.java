@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 @Component
 public class CommandLineReader {
 
+
     public String read() {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {

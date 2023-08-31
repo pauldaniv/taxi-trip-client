@@ -44,13 +44,7 @@ public class PerformanceService implements CmdService {
 
     @Override
     public void runCommand(List<String> params) {
-        final List<String> commandsPassed = params.stream()
-                .filter(COMMANDS.keySet()::contains)
-                .toList();
-
-        final List<String> availableCommands = COMMANDS.keySet().stream()
-                .map(it -> String.format("%s <number>", it)).toList();
-        validate(params, commandsPassed, availableCommands);
+        validate(params, COMMANDS);
         final Map<String, String> commands = listToMap(params);
         final Long eventCount = Long.valueOf(commands.getOrDefault(COUNT,
                 COMMANDS.get(COUNT).getDefaultValue()));
@@ -65,7 +59,7 @@ public class PerformanceService implements CmdService {
         final BigDecimal avgRequestsPerSecond = performanceStats.getAvgRequestsPerSecond();
         final BigDecimal threshold = new BigDecimal(targetAvg);
         log.info("Verifying that average requests per second is greater than: {}", threshold);
-        if(avgRequestsPerSecond.compareTo(threshold) < 0) {
+        if (avgRequestsPerSecond.compareTo(threshold) < 0) {
             throw new RuntimeException("Performance requirement did not meet");
         }
         log.info("Success!");

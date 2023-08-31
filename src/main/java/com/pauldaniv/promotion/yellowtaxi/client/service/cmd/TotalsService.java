@@ -50,13 +50,7 @@ public class TotalsService implements CmdService {
 
     @Override
     public void runCommand(List<String> params) {
-
-        final List<String> commandsPassed = params.stream()
-                .filter(OPTIONS.keySet()::contains)
-                .toList();
-
-        final List<String> availableCommands = OPTIONS.keySet().stream().map(it -> String.format("%s <value>", it)).toList();
-        validate(params, commandsPassed, availableCommands);
+        validate(params, OPTIONS);
         final Map<String, String> commands = listToMap(params);
         final Integer year = Integer.valueOf(commands.getOrDefault(YEAR, OPTIONS.get(YEAR).getDefaultValue()));
         final Integer month = Optional.ofNullable(commands.get(MONTH)).map(Integer::valueOf)

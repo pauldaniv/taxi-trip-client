@@ -50,6 +50,14 @@ public class TotalsServiceTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
+    public void failsWithNoMonthSpecified() {
+        assertThatThrownBy(() -> totalsService
+                .runCommand(List.of("--day", "29", "--year", "2018")))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Month is required!");
+    }
+
+    @Test
     public void failsWithInvalidJson() throws JsonProcessingException {
         when(facadeService.getTotals(2018, 10, 2018))
                 .thenReturn(TotalsResponse.builder().build());
