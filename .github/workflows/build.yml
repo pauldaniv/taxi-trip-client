@@ -27,7 +27,7 @@ jobs:
       - name: Hack container for local development
         if: ${{ env.ACT }}
         run: |
-          curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+          curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
           apt-get install -y nodejs
       - name: Cache gradle dependencies
         uses: actions/cache@v3.2.4
