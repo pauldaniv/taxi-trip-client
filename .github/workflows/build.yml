@@ -51,7 +51,7 @@ jobs:
       - name: Run Tests
         run: ci test
       - name: Run Test Coverage Check
-        run: ci test_coverage_check
+        run: ./gradlew jacocoTestCoverageVerification --info
       - name: Publish artifacts
         if: github.ref == 'refs/heads/main'
         run: ci publish
