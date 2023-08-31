@@ -61,4 +61,4 @@ jobs:
         run: ci publish
       - name: Deploy
         if: github.ref == 'refs/heads/main'
-        run: ci deploy
+        run: ci push_image
